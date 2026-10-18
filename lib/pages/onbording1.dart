@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:watchie/const.dart';
 import 'package:watchie/data/recommendation_engine.dart';
+import 'package:watchie/data/tmdb_api.dart';
 import 'package:watchie/view/widget_tree.dart';
 
 class Onbording extends StatefulWidget {
@@ -11,6 +12,7 @@ class Onbording extends StatefulWidget {
 }
 
 class _OnbordingState extends State<Onbording> {
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -197,6 +199,8 @@ class _OnbordingState extends State<Onbording> {
               onChanged: (value) {
                 setState(() {
                   yearRange = value;
+                  matchesYear(yearRange!);
+                  print('$year1 $year2 $yearRange');
                 });
               },
             ),
@@ -235,22 +239,43 @@ class _OnbordingState extends State<Onbording> {
               children: [
                 Expanded(
                   child: FilledButton(
-                    onPressed: () {
-                      if (genres.isNotEmpty &&
-                          rating != 0 &&
-                          yearRange != null) {
-                        addRecommendation();
-                        addTrend();
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return WidgetTree();
-                            },
-                          ),
-                        );
-                      } else {}
-                    },
+                    onPressed: isLoading
+                        ? null
+                        : () async {
+                            if (!mounted) return;
+
+                            setState(() {
+                              isLoading = true;
+                            });
+
+                            try {
+                              await getTrending();
+                              if (!mounted) return;
+
+                              await recommendations();
+                              if (!mounted) return;
+
+                              if (genres.isNotEmpty &&
+                                  rating != 0 &&
+                                  yearRange != null) {
+                                if (!mounted) return;
+
+                                Navigator.pushReplacement(
+                                  // ignore: use_build_context_synchronously
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WidgetTree(),
+                                  ),
+                                );
+                              }
+                            } finally {
+                              if (mounted) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                              }
+                            }
+                          },
                     style: FilledButton.styleFrom(
                       backgroundColor:
                           genres.isNotEmpty && rating != 0 && yearRange != null
@@ -258,7 +283,16 @@ class _OnbordingState extends State<Onbording> {
                           : const Color.fromARGB(0, 0, 0, 0),
                       foregroundColor: Colors.white,
                     ),
-                    child: Text('Continue'),
+                    child: isLoading
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text('Continue'),
                   ),
                 ),
               ],

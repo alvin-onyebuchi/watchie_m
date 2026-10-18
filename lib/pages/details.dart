@@ -16,10 +16,10 @@ class Details extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Hero(
-              tag: movie.poster,
+              tag: movie.id,
               child: ClipRRect(
                 borderRadius: BorderRadiusGeometry.circular(10),
-                child: Image.asset(movie.poster),
+                child: Image.network(movie.poster),
               ),
             ),
             Card(
@@ -33,8 +33,8 @@ class Details extends StatelessWidget {
                     Text(movie.genres.join(',')),
                     Row(
                       children: [
-                        Text(movie.rating.toString()),
-                        Icon(Icons.star_half_rounded, color: Colors.amber),
+                        Icon(Icons.star_rounded, color: Colors.amber),
+                        Text(movie.rating.toStringAsFixed(1)),
                       ],
                     ),
                     Text(movie.year.toString()),

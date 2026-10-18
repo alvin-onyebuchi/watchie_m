@@ -49,10 +49,10 @@ class _WatchlistState extends State<Watchlist> {
                       );
                     },
                     leading: Hero(
-                      tag: watchlist[index].poster,
+                      tag: watchlist[index].id,
                       child: ClipRRect(
                         borderRadius: BorderRadiusGeometry.circular(5),
-                        child: Image.asset(watchlist[index].poster),
+                        child: Image.network(watchlist[index].poster),
                       ),
                     ),
                     title: Text(watchlist[index].title),
