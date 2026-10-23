@@ -6,7 +6,14 @@ import 'package:watchie/data/tmdb_api.dart';
 import 'package:watchie/pages/home_page.dart';
 import 'package:watchie/tmbd_services.dart';
 
+int searchedIndex = 0;
 Future<void> search(String searchQuery) async {
+  final requesId = ++searchedIndex;
+
+  if (searchQuery.trim().isEmpty) {
+    searchedMatchedMovies.clear();
+    return;
+  }
   var response = await http.get(
     Uri.parse(
       'https://api.themoviedb.org/3/search/movie'
@@ -17,12 +24,13 @@ Future<void> search(String searchQuery) async {
       "accept": "application/json",
     },
   );
+  if (requesId != searchedIndex) return;
 
   var data = jsonDecode(response.body);
 
-  List<dynamic> results = data["results"];
   searchedMatchedMovies.clear();
-  Movie movie;
+
+  List<dynamic> results = data["results"];
 
   for (var result in results) {
     int id = result["id"];
@@ -37,9 +45,9 @@ Future<void> search(String searchQuery) async {
     List<String> genres = genreIds.map((id) {
       return genreMapId[id]!;
     }).toList();
-    movie = Movie(id, title, poster, genres, year, rating, description);
 
-    searchedMatchedMovies.add(movie);
+    searchedMatchedMovies.add(
+      Movie(id, title, poster, genres, year, rating, description),
+    );
   }
-  return;
 }
