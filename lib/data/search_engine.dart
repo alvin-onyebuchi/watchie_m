@@ -3,51 +3,55 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:watchie/const.dart';
 import 'package:watchie/data/tmdb_api.dart';
-import 'package:watchie/pages/home_page.dart';
 import 'package:watchie/tmbd_services.dart';
 
-int searchedIndex = 0;
-Future<void> search(String searchQuery) async {
-  final requesId = ++searchedIndex;
+Future<List<Movie>> search(String searchQuery) async {
+  final query = searchQuery.trim();
 
-  if (searchQuery.trim().isEmpty) {
-    searchedMatchedMovies.clear();
-    return;
+  if (query.isEmpty) {
+    return [];
   }
-  var response = await http.get(
+
+  final response = await http.get(
     Uri.parse(
       'https://api.themoviedb.org/3/search/movie'
-      '?query=$searchQuery',
+      '?query=$query',
     ),
     headers: {
       "Authorization": "Bearer $tmbdApiKey",
       "accept": "application/json",
     },
   );
-  if (requesId != searchedIndex) return;
+  print(response.statusCode);
+  if (response.statusCode != 200) {
+    throw Exception("Movie search fail (${response.statusCode})");
+  }
 
-  var data = jsonDecode(response.body);
+  final data = jsonDecode(response.body) as Map<String, dynamic>;
 
-  searchedMatchedMovies.clear();
+  final results = data["results"] as List<dynamic>? ?? [];
 
-  List<dynamic> results = data["results"];
+  return results.map((item) {
+    final result = item as Map<String, dynamic>;
 
-  for (var result in results) {
-    int id = result["id"];
+    final id = result["id"];
     double rating = result["vote_average"];
     String title = result["title"];
     String description = result["overview"];
+    final posterPath = result["poster_path"] as String?;
 
-    String poster = "https://image.tmdb.org/t/p/w500${result["poster_path"]}";
-    int year = int.tryParse((result["release_date"]).substring(0, 4)) ?? 0;
+    final poster = posterPath == null
+        ? ''
+        : "https://image.tmdb.org/t/p/w500$posterPath";
+    final releaseDate = result["release_date"] as String? ?? '';
+    final year = releaseDate.length >= 4
+        ? int.tryParse(releaseDate.substring(0, 4)) ?? 0
+        : 0;
 
     List<dynamic> genreIds = result["genre_ids"];
     List<String> genres = genreIds.map((id) {
       return genreMapId[id]!;
     }).toList();
-
-    searchedMatchedMovies.add(
-      Movie(id, title, poster, genres, year, rating, description),
-    );
-  }
+    return Movie(id, title, poster, genres, year, rating, description);
+  }).toList();
 }

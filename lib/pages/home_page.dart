@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:watchie/const.dart';
 import 'package:watchie/data/search_engine.dart';
@@ -14,10 +16,53 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String searchQuery = '';
-  bool isLoadingrecommendation = false;
+  List<Movie> searchResults = [];
+  Timer? searchDebounce;
+  int searchRequedtId = 0;
 
-  Future<void> searchEngine() async {
-    await search(searchQuery);
+  bool isSearching = false;
+  String? searchError;
+  Future<void> runSearch(String value) async {
+    final requestId = ++searchRequedtId;
+
+    try {
+      final results = await search(value);
+      if (!mounted || requestId != searchRequedtId) return;
+      setState(() {
+        searchResults = results;
+        isSearching = false;
+      });
+    } catch (_) {
+      if (!mounted || requestId != searchRequedtId) return;
+
+      setState(() {
+        searchError = 'Could not load search result';
+        isSearching = false;
+      });
+    }
+  }
+
+  void onSearchChanged(String value) {
+    searchDebounce?.cancel();
+    setState(() {
+      searchQuery = value;
+      searchResults = [];
+      searchError = null;
+      isSearching = value.trim().isNotEmpty;
+    });
+
+    if (value.trim().isEmpty) {
+      return;
+    }
+    searchDebounce = Timer(Duration(milliseconds: 400), () {
+      runSearch(value);
+    });
+  }
+
+  @override
+  void dispose() {
+    searchDebounce?.cancel();
+    super.dispose();
   }
 
   @override
@@ -39,15 +84,7 @@ class _HomePageState extends State<HomePage> {
               SearchBar(
                 hintText: 'Search...',
                 leading: Icon(Icons.search_rounded),
-                onChanged: (value) async {
-                  await search(value);
-
-                  if (!mounted) return;
-
-                  setState(() {
-                    searchQuery = value;
-                  });
-                },
+                onChanged: onSearchChanged,
               ),
               searchQuery.isEmpty
                   ? Column(
@@ -84,9 +121,8 @@ class _HomePageState extends State<HomePage> {
                                 gridDelegate:
                                     SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 3,
-                                      crossAxisSpacing: 10,
 
-                                      childAspectRatio: 0.65,
+                                      childAspectRatio: 0.67,
                                     ),
                                 itemCount: recommended.length,
                                 itemBuilder: (context, index) {
@@ -208,54 +244,60 @@ class _HomePageState extends State<HomePage> {
                       ],
                     )
                   : Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          itemCount: searchedMatchedMovies.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) {
-                                      return Details(
-                                        movie: searchedMatchedMovies[index],
+                        isSearching
+                            ? const Center(child: CircularProgressIndicator())
+                            : searchError != null
+                            ? Center(child: Text(searchError!))
+                            : searchResults.isEmpty
+                            ? Center(child: Text('No movies found'))
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemCount: searchResults.length,
+                                itemBuilder: (context, index) {
+                                  return ListTile(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) {
+                                            return Details(
+                                              movie: searchResults[index],
+                                            );
+                                          },
+                                        ),
                                       );
                                     },
-                                  ),
-                                );
-                              },
-                              leading: Image.network(
-                                searchedMatchedMovies[index].poster,
-                              ),
-                              title: Text(searchedMatchedMovies[index].title),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        searchedMatchedMovies[index].rating
-                                            .toString(),
-                                      ),
-                                      Icon(
-                                        Icons.star_half_rounded,
-                                        color: Colors.amber,
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    searchedMatchedMovies[index].genres.join(
-                                      ',',
+                                    leading: Image.network(
+                                      searchResults[index].poster,
                                     ),
-                                  ),
-                                ],
+                                    title: Text(searchResults[index].title),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              searchResults[index].rating
+                                                  .toString(),
+                                            ),
+                                            Icon(
+                                              Icons.star_half_rounded,
+                                              color: Colors.amber,
+                                            ),
+                                          ],
+                                        ),
+                                        Text(
+                                          searchResults[index].genres.join(','),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
                               ),
-                            );
-                          },
-                        ),
                       ],
                     ),
             ],
