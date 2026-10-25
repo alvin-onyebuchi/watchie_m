@@ -90,6 +90,7 @@ class _HomePageState extends State<HomePage> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        SizedBox(),
                         Text(
                           'Your Recomendations',
                           style: TextStyle(
@@ -97,6 +98,9 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 20,
                           ),
                         ),
+                        Row(children: [TextButton(onPressed: () {
+                          
+                        }, child: child)],)
                         recommended.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -115,73 +119,55 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               )
-                            : GridView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
+                            : SizedBox(
+                                height: 200,
+                                child: CarouselView(
+                                  itemExtent: 150,
+                                  itemSnapping: true,
+                                  onTap: (index) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return Details(
+                                            movie: recommended[index],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
 
-                                      childAspectRatio: 0.67,
-                                    ),
-                                itemCount: recommended.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return Details(
-                                              movie: recommended[index],
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Card(
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                BorderRadiusGeometry.circular(
-                                                  10,
+                                  children: List.generate(recommended.length, (
+                                    index,
+                                  ) {
+                                    return ClipRRect(
+                                      child: Image.network(
+                                        recommended[index].poster,
+                                        fit: BoxFit.cover,
+                                        loadingBuilder:
+                                            (context, child, loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      color: Colors.red,
+                                                      strokeWidth: 2,
+                                                    ),
+                                              );
+                                            },
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                Center(
+                                                  child: Icon(
+                                                    Icons.broken_image,
+                                                  ),
                                                 ),
-                                            child: Image.network(
-                                              recommended[index].poster,
-                                              loadingBuilder:
-                                                  (
-                                                    context,
-                                                    child,
-                                                    loadingProgress,
-                                                  ) {
-                                                    if (loadingProgress ==
-                                                        null) {
-                                                      return child;
-                                                    }
-                                                    return CircularProgressIndicator(
-                                                      strokeWidth: 3,
-                                                      color: Colors.white,
-                                                      padding: EdgeInsets.all(
-                                                        8,
-                                                      ),
-                                                    );
-                                                  },
-                                              errorBuilder:
-                                                  (context, error, stackTrace) {
-                                                    return Icon(
-                                                      Icons.broken_image,
-                                                    );
-                                                  },
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
 
                         SizedBox(height: 10),

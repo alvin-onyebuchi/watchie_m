@@ -54,7 +54,7 @@ Future<void> recommendations() async {
   print('statusCode: ${response.statusCode}');
   print('body length: ${response.body.length}');
   var data = jsonDecode(response.body);
-
+  print(data);
   List<dynamic> results = data["results"];
   for (var result in results.take(5)) {
     print('${result["title"]} -> ${result["release_date"]}');
