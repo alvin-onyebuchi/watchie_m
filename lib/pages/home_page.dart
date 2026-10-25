@@ -98,9 +98,6 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 20,
                           ),
                         ),
-                        Row(children: [TextButton(onPressed: () {
-                          
-                        }, child: child)],)
                         recommended.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
