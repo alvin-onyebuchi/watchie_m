@@ -117,9 +117,9 @@ class _HomePageState extends State<HomePage> {
                                 ],
                               )
                             : SizedBox(
-                                height: 200,
+                                height: 150,
                                 child: CarouselView(
-                                  itemExtent: 150,
+                                  itemExtent: 100,
                                   itemSnapping: true,
                                   onTap: (index) {
                                     Navigator.push(
@@ -137,9 +137,76 @@ class _HomePageState extends State<HomePage> {
                                   children: List.generate(recommended.length, (
                                     index,
                                   ) {
+                                    return Container(
+                                      child: ClipRRect(
+                                        child: Image.network(
+                                          recommended[index].poster,
+                                          fit: BoxFit.cover,
+                                          loadingBuilder:
+                                              (
+                                                context,
+                                                child,
+                                                loadingProgress,
+                                              ) {
+                                                if (loadingProgress == null) {
+                                                  return child;
+                                                }
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        color: Colors.red,
+                                                        strokeWidth: 2,
+                                                      ),
+                                                );
+                                              },
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  Center(
+                                                    child: Icon(
+                                                      Icons.broken_image,
+                                                    ),
+                                                  ),
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ),
+
+                        SizedBox(height: 10),
+                        Text(
+                          'Trending',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                          ),
+                        ),
+                        trending.isEmpty
+                            ? Text('dddddddd')
+                            : SizedBox(
+                                height: 150,
+                                child: CarouselView(
+                                  itemExtent: 100,
+                                  itemSnapping: true,
+                                  onTap: (index) {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) {
+                                          return Details(
+                                            movie: trending[index],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+
+                                  children: List.generate(trending.length, (
+                                    index,
+                                  ) {
                                     return ClipRRect(
                                       child: Image.network(
-                                        recommended[index].poster,
+                                        trending[index].poster,
                                         fit: BoxFit.cover,
                                         loadingBuilder:
                                             (context, child, loadingProgress) {
@@ -165,64 +232,6 @@ class _HomePageState extends State<HomePage> {
                                     );
                                   }),
                                 ),
-                              ),
-
-                        SizedBox(height: 10),
-                        Text(
-                          'Trending',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
-                        ),
-                        trending.isEmpty
-                            ? Text('dddddddd')
-                            : GridView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 3,
-                                      crossAxisSpacing: 5,
-
-                                      childAspectRatio: 0.65,
-                                    ),
-                                itemCount: trending.length,
-                                itemBuilder: (context, index) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return Details(
-                                              movie: trending[index],
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SizedBox(
-                                          child: Card(
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadiusGeometry.circular(
-                                                    10,
-                                                  ),
-                                              child: Image.network(
-                                                trending[index].poster,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
                               ),
                       ],
                     )
