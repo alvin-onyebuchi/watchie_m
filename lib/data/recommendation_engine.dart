@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:watchie/const.dart';
-import 'package:watchie/data/tmdb_api.dart';
+import 'package:watchie/data/trending_engine.dart';
 import 'package:watchie/tmbd_services.dart';
 
 final Map<String, int> genreMap = {
@@ -49,7 +49,7 @@ Future<http.Response> getRecomendation() async {
   return response;
 }
 
-Future<void> recommendations() async {
+Future<void> recommendationMovie() async {
   var response = await getRecomendation();
   print('statusCode: ${response.statusCode}');
   print('body length: ${response.body.length}');
@@ -60,11 +60,11 @@ Future<void> recommendations() async {
     print('${result["title"]} -> ${result["release_date"]}');
   }
   Movie? movie;
-  recommended.clear();
+  recommendedMovie.clear();
   for (var result in results) {
     int id = result["id"];
     double rating = result["vote_average"];
-    String title = result["title"];
+    String title = result["name"];
     String description = result["overview"];
 
     String poster = "https://image.tmdb.org/t/p/w500${result["poster_path"]}";
@@ -76,7 +76,56 @@ Future<void> recommendations() async {
     }).toList();
     movie = Movie(id, title, poster, genres, year, rating, description);
 
-    recommended.add(movie);
+    recommendedMovie.add(movie);
+  }
+}
+
+Future<http.Response> getRecomendationTv() async {
+  print('$year1 $year2 $genreids $rating');
+  var response = await http.get(
+    Uri.parse(
+      'https://api.themoviedb.org/3/discover/tv'
+      '?primary_first_air_date.gte=$year1-01-01'
+      '&primary_first_air_date.lte=$year2-12-31'
+      '&with_genres=${genreids.join(',')}'
+      '&vote_average.gte=$rating',
+    ),
+    headers: {
+      "Authorization": "Bearer $tmbdApiKey",
+      "accept": "application/json",
+    },
+  );
+  return response;
+}
+
+Future<void> recommendationTv() async {
+  var response = await getRecomendation();
+  print('statusCode: ${response.statusCode}');
+  print('body length: ${response.body.length}');
+  var data = jsonDecode(response.body);
+  print(data);
+  List<dynamic> results = data["results"];
+  for (var result in results.take(5)) {
+    print('${result["title"]} -> ${result["release_date"]}');
+  }
+  Movie? movie;
+  recommendedTv.clear();
+  for (var result in results) {
+    int id = result["id"];
+    double rating = result["vote_average"];
+    String title = result["name"];
+    String description = result["overview"];
+
+    String poster = "https://image.tmdb.org/t/p/w500${result["poster_path"]}";
+    int year = int.tryParse((result["release_date"]).substring(0, 4)) ?? 0;
+
+    List<dynamic> genreIds = result["genre_ids"];
+    List<String> genres = genreIds.map((id) {
+      return genreMapId[id]!;
+    }).toList();
+    movie = Movie(id, title, poster, genres, year, rating, description);
+
+    recommendedTv.add(movie);
   }
 }
 

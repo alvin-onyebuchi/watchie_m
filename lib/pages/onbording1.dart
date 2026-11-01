@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:watchie/const.dart';
 import 'package:watchie/data/recommendation_engine.dart';
-import 'package:watchie/data/tmdb_api.dart';
+import 'package:watchie/data/trending_engine.dart';
 import 'package:watchie/view/widget_tree.dart';
 
 class Onbording extends StatefulWidget {
@@ -249,10 +249,15 @@ class _OnbordingState extends State<Onbording> {
                             });
 
                             try {
+                              await getTrendingTv();
+                              if (!mounted) return;
+
                               await getTrending();
                               if (!mounted) return;
 
-                              await recommendations();
+                              await recommendationMovie();
+                              if (!mounted) return;
+                              await recommendationTv();
                               if (!mounted) return;
 
                               if (genres.isNotEmpty &&

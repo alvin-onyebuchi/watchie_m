@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:watchie/const.dart';
-import 'package:watchie/data/tmdb_api.dart';
+import 'package:watchie/data/trending_engine.dart';
 import 'package:watchie/tmbd_services.dart';
 
 Future<List<Movie>> search(String searchQuery) async {

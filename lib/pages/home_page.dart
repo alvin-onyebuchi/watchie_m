@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:watchie/const.dart';
 import 'package:watchie/data/search_engine.dart';
 import 'package:watchie/pages/details.dart';
+import 'package:watchie/widgets/recommended_movie_carouesl.dart';
+import 'package:watchie/widgets/recommended_tv_corousel.dart';
+import 'package:watchie/widgets/trending_movie_carousel.dart';
+import 'package:watchie/widgets/trending_tv_carousel.dart';
 
 List<Movie> searchedMatchedMovies = [];
 
@@ -19,7 +23,8 @@ class _HomePageState extends State<HomePage> {
   List<Movie> searchResults = [];
   Timer? searchDebounce;
   int searchRequedtId = 0;
-
+  bool isTrendingMovie = true;
+  bool isRecommendedMovie = true;
   bool isSearching = false;
   String? searchError;
   Future<void> runSearch(String value) async {
@@ -98,7 +103,28 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 20,
                           ),
                         ),
-                        recommended.isEmpty
+                        Row(
+                          children: [
+                            FilledButton(
+                              onPressed: () {
+                                setState(() {
+                                  isRecommendedMovie = true;
+                                });
+                              },
+                              child: Text("Movie"),
+                            ),
+
+                            FilledButton(
+                              onPressed: () {
+                                setState(() {
+                                  isRecommendedMovie = false;
+                                });
+                              },
+                              child: Text("TV"),
+                            ),
+                          ],
+                        ),
+                        recommendedTv.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -116,62 +142,9 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ],
                               )
-                            : SizedBox(
-                                height: 150,
-                                child: CarouselView(
-                                  itemExtent: 100,
-                                  itemSnapping: true,
-                                  onTap: (index) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return Details(
-                                            movie: recommended[index],
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
-
-                                  children: List.generate(recommended.length, (
-                                    index,
-                                  ) {
-                                    return Container(
-                                      child: ClipRRect(
-                                        child: Image.network(
-                                          recommended[index].poster,
-                                          fit: BoxFit.cover,
-                                          loadingBuilder:
-                                              (
-                                                context,
-                                                child,
-                                                loadingProgress,
-                                              ) {
-                                                if (loadingProgress == null) {
-                                                  return child;
-                                                }
-                                                return Center(
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                        color: Colors.red,
-                                                        strokeWidth: 2,
-                                                      ),
-                                                );
-                                              },
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  Center(
-                                                    child: Icon(
-                                                      Icons.broken_image,
-                                                    ),
-                                                  ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
+                            : isRecommendedMovie
+                            ? RecommendedMovieCarouesl()
+                            : RecommendedTvCorousel(),
 
                         SizedBox(height: 10),
                         Text(
@@ -181,58 +154,32 @@ class _HomePageState extends State<HomePage> {
                             fontSize: 20,
                           ),
                         ),
-                        trending.isEmpty
-                            ? Text('dddddddd')
-                            : SizedBox(
-                                height: 150,
-                                child: CarouselView(
-                                  itemExtent: 100,
-                                  itemSnapping: true,
-                                  onTap: (index) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) {
-                                          return Details(
-                                            movie: trending[index],
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  },
+                        Row(
+                          children: [
+                            FilledButton(
+                              onPressed: () {
+                                setState(() {
+                                  isTrendingMovie = true;
+                                });
+                              },
+                              child: Text("Movie"),
+                            ),
 
-                                  children: List.generate(trending.length, (
-                                    index,
-                                  ) {
-                                    return ClipRRect(
-                                      child: Image.network(
-                                        trending[index].poster,
-                                        fit: BoxFit.cover,
-                                        loadingBuilder:
-                                            (context, child, loadingProgress) {
-                                              if (loadingProgress == null) {
-                                                return child;
-                                              }
-                                              return Center(
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      color: Colors.red,
-                                                      strokeWidth: 2,
-                                                    ),
-                                              );
-                                            },
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                Center(
-                                                  child: Icon(
-                                                    Icons.broken_image,
-                                                  ),
-                                                ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              ),
+                            FilledButton(
+                              onPressed: () {
+                                setState(() {
+                                  isTrendingMovie = false;
+                                });
+                              },
+                              child: Text("TV"),
+                            ),
+                          ],
+                        ),
+                        trendingTv.isEmpty
+                            ? Text('dddddddd')
+                            : isTrendingMovie
+                            ? MovieCarousel()
+                            : TvCarousel(),
                       ],
                     )
                   : Column(

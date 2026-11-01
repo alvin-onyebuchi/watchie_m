@@ -12,7 +12,7 @@ class Fab extends StatefulWidget {
 class _FabState extends State<Fab> {
   @override
   Widget build(BuildContext context) {
-    return recommended.isEmpty
+    return recommendedTv.isEmpty
         ? Text('')
         : FloatingActionButton(
             onPressed: () {

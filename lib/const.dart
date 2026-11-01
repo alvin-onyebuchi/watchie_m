@@ -85,6 +85,8 @@ List<Movie> movies = [
     "Interstellar (2014) is a science fiction film directed by Christopher Nolan about a group of astronauts who travel through a wormhole to find a new home as Earth dies.",
   ),
 ];
-final List<Movie> recommended = [];
+final List<Movie> recommendedMovie = [];
+final List<Movie> recommendedTv = [];
 final List<Movie> watchlist = [];
-List<Movie> trending = [];
+List<Movie> trendingMovie = [];
+List<Movie> trendingTv = [];
