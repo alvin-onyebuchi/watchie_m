@@ -31,7 +31,7 @@ int? year2;
 double rating = 0;
 List<int> genreids = [];
 List<String> genres = [];
-Future<http.Response> getRecomendation() async {
+Future<http.Response> getRecomendationMovie() async {
   print('$year1 $year2 $genreids $rating');
   var response = await http.get(
     Uri.parse(
@@ -50,21 +50,17 @@ Future<http.Response> getRecomendation() async {
 }
 
 Future<void> recommendationMovie() async {
-  var response = await getRecomendation();
-  print('statusCode: ${response.statusCode}');
-  print('body length: ${response.body.length}');
+  var response = await getRecomendationMovie();
+
   var data = jsonDecode(response.body);
-  print(data);
+
   List<dynamic> results = data["results"];
-  for (var result in results.take(5)) {
-    print('${result["title"]} -> ${result["release_date"]}');
-  }
-  Movie? movie;
+
   recommendedMovie.clear();
   for (var result in results) {
     int id = result["id"];
     double rating = result["vote_average"];
-    String title = result["name"];
+    String title = result["title"];
     String description = result["overview"];
 
     String poster = "https://image.tmdb.org/t/p/w500${result["poster_path"]}";
@@ -74,7 +70,7 @@ Future<void> recommendationMovie() async {
     List<String> genres = genreIds.map((id) {
       return genreMapId[id]!;
     }).toList();
-    movie = Movie(id, title, poster, genres, year, rating, description);
+    Movie movie = Movie(id, title, poster, genres, year, rating, description);
 
     recommendedMovie.add(movie);
   }
@@ -99,16 +95,15 @@ Future<http.Response> getRecomendationTv() async {
 }
 
 Future<void> recommendationTv() async {
-  var response = await getRecomendation();
+  var response = await getRecomendationTv();
   print('statusCode: ${response.statusCode}');
-  print('body length: ${response.body.length}');
   var data = jsonDecode(response.body);
   print(data);
   List<dynamic> results = data["results"];
   for (var result in results.take(5)) {
-    print('${result["title"]} -> ${result["release_date"]}');
+    print('${result["name"]} -> ${result["first_air_date"]}');
   }
-  Movie? movie;
+
   recommendedTv.clear();
   for (var result in results) {
     int id = result["id"];
@@ -117,13 +112,14 @@ Future<void> recommendationTv() async {
     String description = result["overview"];
 
     String poster = "https://image.tmdb.org/t/p/w500${result["poster_path"]}";
-    int year = int.tryParse((result["release_date"]).substring(0, 4)) ?? 0;
+    int year = int.tryParse((result["first_air_date"]).substring(0, 4)) ?? 0;
 
     List<dynamic> genreIds = result["genre_ids"];
     List<String> genres = genreIds.map((id) {
-      return genreMapId[id]!;
+      return tvGenreMapId[id]!;
     }).toList();
-    movie = Movie(id, title, poster, genres, year, rating, description);
+
+    Movie movie = Movie(id, title, poster, genres, year, rating, description);
 
     recommendedTv.add(movie);
   }

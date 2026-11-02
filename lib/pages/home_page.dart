@@ -105,26 +105,42 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Row(
                           children: [
-                            FilledButton(
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isRecommendedMovie = true;
                                 });
                               },
-                              child: Text("Movie"),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: isRecommendedMovie
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text(
+                                "Movie",
+                                style: TextStyle(fontSize: 10),
+                              ),
                             ),
-
-                            FilledButton(
+                            SizedBox(width: 10),
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isRecommendedMovie = false;
                                 });
                               },
-                              child: Text("TV"),
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: Size(70, 20),
+                                backgroundColor: isRecommendedMovie == false
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text("TV", style: TextStyle(fontSize: 10)),
                             ),
                           ],
                         ),
-                        recommendedTv.isEmpty
+                        recommendedTv.isEmpty || recommendedMovie.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -156,22 +172,38 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Row(
                           children: [
-                            FilledButton(
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isTrendingMovie = true;
                                 });
                               },
-                              child: Text("Movie"),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: isTrendingMovie == true
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text(
+                                "Movie",
+                                style: TextStyle(fontSize: 10),
+                              ),
                             ),
-
-                            FilledButton(
+                            SizedBox(width: 10),
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isTrendingMovie = false;
                                 });
                               },
-                              child: Text("TV"),
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: Size(70, 20),
+                                backgroundColor: isTrendingMovie == false
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text("TV", style: TextStyle(fontSize: 10)),
                             ),
                           ],
                         ),

@@ -14,7 +14,7 @@ Future<List<Movie>> search(String searchQuery) async {
 
   final response = await http.get(
     Uri.parse(
-      'https://api.themoviedb.org/3/search/movie'
+      'https://api.themoviedb.org/3/search/multi'
       '?query=$query',
     ),
     headers: {
@@ -30,27 +30,34 @@ Future<List<Movie>> search(String searchQuery) async {
   final data = jsonDecode(response.body) as Map<String, dynamic>;
 
   final results = data["results"] as List<dynamic>? ?? [];
+  print(data);
 
   return results.map((item) {
     final result = item as Map<String, dynamic>;
 
     final id = result["id"];
+    final mediaType = result["media_type"];
     double rating = result["vote_average"];
-    String title = result["title"];
+
+    final String title = mediaType == "movie"
+        ? result["title"]
+        : result["name"];
     String description = result["overview"];
     final posterPath = result["poster_path"] as String?;
 
     final poster = posterPath == null
         ? ''
         : "https://image.tmdb.org/t/p/w500$posterPath";
-    final releaseDate = result["release_date"] as String? ?? '';
+    final releaseDate = mediaType == "movie"
+        ? result["release_date"] as String? ?? ''
+        : result["first_air_date"] as String? ?? '';
     final year = releaseDate.length >= 4
         ? int.tryParse(releaseDate.substring(0, 4)) ?? 0
         : 0;
 
     List<dynamic> genreIds = result["genre_ids"];
     List<String> genres = genreIds.map((id) {
-      return genreMapId[id]!;
+      return tvGenreMapId[id]!;
     }).toList();
     return Movie(id, title, poster, genres, year, rating, description);
   }).toList();

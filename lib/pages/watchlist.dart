@@ -50,9 +50,10 @@ class _WatchlistState extends State<Watchlist> {
                     },
                     leading: Hero(
                       tag: watchlist[index].id,
-                      child: ClipRRect(
-                        borderRadius: BorderRadiusGeometry.circular(5),
-                        child: Image.network(watchlist[index].poster),
+                      child: Image.network(
+                        watchlist[index].poster,
+
+                        fit: BoxFit.contain,
                       ),
                     ),
                     title: Text(watchlist[index].title),

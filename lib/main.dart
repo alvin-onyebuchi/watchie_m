@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.blue,
+            seedColor: const Color.fromARGB(255, 255, 0, 0),
             brightness: darkMode ? Brightness.dark : Brightness.light,
           ),
         ),
