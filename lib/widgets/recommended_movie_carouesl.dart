@@ -16,6 +16,7 @@ class _RecommendedMovieCaroueslState extends State<RecommendedMovieCarouesl> {
     return SizedBox(
       height: 170,
       child: CarouselView(
+        infinite: true,
         itemExtent: 120,
         itemSnapping: true,
         onTap: (index) {

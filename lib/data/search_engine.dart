@@ -30,27 +30,26 @@ Future<List<Movie>> search(String searchQuery) async {
   final data = jsonDecode(response.body) as Map<String, dynamic>;
 
   final results = data["results"] as List<dynamic>? ?? [];
-  print(data);
+  // print(data);
 
   return results.map((item) {
     final result = item as Map<String, dynamic>;
 
     final id = result["id"];
-    final mediaType = result["media_type"];
+    final String mediaType = result["media_type"];
     double rating = result["vote_average"];
 
-    final String title = mediaType == "movie"
-        ? result["title"]
-        : result["name"];
+    final String title = mediaType == "tv" ? result["name"] : result["title"];
     String description = result["overview"];
     final posterPath = result["poster_path"] as String?;
 
     final poster = posterPath == null
         ? ''
         : "https://image.tmdb.org/t/p/w500$posterPath";
-    final releaseDate = mediaType == "movie"
-        ? result["release_date"] as String? ?? ''
-        : result["first_air_date"] as String? ?? '';
+    final releaseDate = mediaType == "tv"
+        ? result["first_air_date"] as String? ?? ''
+        : result["release_date"] as String? ?? '';
+
     final year = releaseDate.length >= 4
         ? int.tryParse(releaseDate.substring(0, 4)) ?? 0
         : 0;
@@ -59,6 +58,7 @@ Future<List<Movie>> search(String searchQuery) async {
     List<String> genres = genreIds.map((id) {
       return tvGenreMapId[id]!;
     }).toList();
+    print('$title  $mediaType');
     return Movie(id, title, poster, genres, year, rating, description);
   }).toList();
 }

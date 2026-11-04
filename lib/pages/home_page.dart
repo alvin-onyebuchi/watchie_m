@@ -27,6 +27,24 @@ class _HomePageState extends State<HomePage> {
   bool isRecommendedMovie = true;
   bool isSearching = false;
   String? searchError;
+
+  void onSearchChanged(String value) {
+    searchDebounce?.cancel();
+    setState(() {
+      searchQuery = value;
+      searchResults = [];
+      searchError = null;
+      isSearching = value.trim().isNotEmpty;
+    });
+
+    if (value.trim().isEmpty) {
+      return;
+    }
+    searchDebounce = Timer(Duration(milliseconds: 400), () {
+      runSearch(value);
+    });
+  }
+
   Future<void> runSearch(String value) async {
     final requestId = ++searchRequedtId;
 
@@ -45,23 +63,6 @@ class _HomePageState extends State<HomePage> {
         isSearching = false;
       });
     }
-  }
-
-  void onSearchChanged(String value) {
-    searchDebounce?.cancel();
-    setState(() {
-      searchQuery = value;
-      searchResults = [];
-      searchError = null;
-      isSearching = value.trim().isNotEmpty;
-    });
-
-    if (value.trim().isEmpty) {
-      return;
-    }
-    searchDebounce = Timer(Duration(milliseconds: 400), () {
-      runSearch(value);
-    });
   }
 
   @override

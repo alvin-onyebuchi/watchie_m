@@ -15,6 +15,7 @@ class _RecommendedTvCorouselState extends State<RecommendedTvCorousel> {
     return SizedBox(
       height: 170,
       child: CarouselView(
+        infinite: true,
         itemExtent: 120,
         itemSnapping: true,
         onTap: (index) {

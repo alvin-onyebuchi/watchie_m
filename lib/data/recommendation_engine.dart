@@ -36,10 +36,11 @@ Future<http.Response> getRecomendationMovie() async {
   var response = await http.get(
     Uri.parse(
       'https://api.themoviedb.org/3/discover/movie'
-      '?primary_release_date.gte=$year1-01-01'
-      '&primary_release_date.lte=$year2-12-31'
+      '?primary_first_air_date.gte=$year1-01-01'
+      '&primary_first_air_date.lte=$year2-12-31'
       '&with_genres=${genreids.join(',')}'
-      '&vote_average.gte=$rating',
+      '&vote_average.gte=$rating'
+      '&with_origin_country=KR',
     ),
     headers: {
       "Authorization": "Bearer $tmbdApiKey",
@@ -84,7 +85,8 @@ Future<http.Response> getRecomendationTv() async {
       '?primary_first_air_date.gte=$year1-01-01'
       '&primary_first_air_date.lte=$year2-12-31'
       '&with_genres=${genreids.join(',')}'
-      '&vote_average.gte=$rating',
+      '&vote_average.gte=$rating'
+      '&with_origin_country=KR',
     ),
     headers: {
       "Authorization": "Bearer $tmbdApiKey",
