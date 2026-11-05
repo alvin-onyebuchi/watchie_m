@@ -20,38 +20,22 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String searchQuery = '';
-  List<Movie> searchResults = [];
+  List<Movie> movieSearchResults = [];
+  List<Movie> tvSearchResults = [];
   Timer? searchDebounce;
   int searchRequedtId = 0;
   bool isTrendingMovie = true;
   bool isRecommendedMovie = true;
+  bool isSearchMovie = true;
   bool isSearching = false;
   String? searchError;
-  Future<void> runSearch(String value) async {
-    final requestId = ++searchRequedtId;
-
-    try {
-      final results = await search(value);
-      if (!mounted || requestId != searchRequedtId) return;
-      setState(() {
-        searchResults = results;
-        isSearching = false;
-      });
-    } catch (_) {
-      if (!mounted || requestId != searchRequedtId) return;
-
-      setState(() {
-        searchError = 'Could not load search result';
-        isSearching = false;
-      });
-    }
-  }
 
   void onSearchChanged(String value) {
     searchDebounce?.cancel();
     setState(() {
       searchQuery = value;
-      searchResults = [];
+      movieSearchResults = [];
+      tvSearchResults = [];
       searchError = null;
       isSearching = value.trim().isNotEmpty;
     });
@@ -62,6 +46,30 @@ class _HomePageState extends State<HomePage> {
     searchDebounce = Timer(Duration(milliseconds: 400), () {
       runSearch(value);
     });
+  }
+
+  Future<void> runSearch(String value) async {
+    final requestId = ++searchRequedtId;
+
+    try {
+      final movieResults = await searchMovie(value);
+      final tvResults = await searchTv(value);
+
+      if (!mounted || requestId != searchRequedtId) return;
+
+      setState(() {
+        movieSearchResults = movieResults;
+        tvSearchResults = tvResults;
+        isSearching = false;
+      });
+    } catch (_) {
+      if (!mounted || requestId != searchRequedtId) return;
+
+      setState(() {
+        searchError = 'Could not load search result';
+        isSearching = false;
+      });
+    }
   }
 
   @override
@@ -105,26 +113,42 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Row(
                           children: [
-                            FilledButton(
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isRecommendedMovie = true;
                                 });
                               },
-                              child: Text("Movie"),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: isRecommendedMovie
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text(
+                                "Movie",
+                                style: TextStyle(fontSize: 10),
+                              ),
                             ),
-
-                            FilledButton(
+                            SizedBox(width: 10),
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isRecommendedMovie = false;
                                 });
                               },
-                              child: Text("TV"),
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: Size(70, 20),
+                                backgroundColor: isRecommendedMovie == false
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text("TV", style: TextStyle(fontSize: 10)),
                             ),
                           ],
                         ),
-                        recommendedTv.isEmpty
+                        recommendedTv.isEmpty || recommendedMovie.isEmpty
                             ? Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -156,22 +180,38 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Row(
                           children: [
-                            FilledButton(
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isTrendingMovie = true;
                                 });
                               },
-                              child: Text("Movie"),
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: isTrendingMovie == true
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text(
+                                "Movie",
+                                style: TextStyle(fontSize: 10),
+                              ),
                             ),
-
-                            FilledButton(
+                            SizedBox(width: 10),
+                            OutlinedButton(
                               onPressed: () {
                                 setState(() {
                                   isTrendingMovie = false;
                                 });
                               },
-                              child: Text("TV"),
+                              style: OutlinedButton.styleFrom(
+                                fixedSize: Size(70, 20),
+                                backgroundColor: isTrendingMovie == false
+                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    : const Color.fromARGB(0, 0, 0, 0),
+                                foregroundColor: Colors.white,
+                              ),
+                              child: Text("TV", style: TextStyle(fontSize: 10)),
                             ),
                           ],
                         ),
@@ -189,53 +229,131 @@ class _HomePageState extends State<HomePage> {
                             ? const Center(child: CircularProgressIndicator())
                             : searchError != null
                             ? Center(child: Text(searchError!))
-                            : searchResults.isEmpty
+                            : movieSearchResults.isEmpty &&
+                                  tvSearchResults.isEmpty
                             ? Center(child: Text('No movies found'))
-                            : ListView.builder(
-                                shrinkWrap: true,
-                                physics: AlwaysScrollableScrollPhysics(),
-                                itemCount: searchResults.length,
-                                itemBuilder: (context, index) {
-                                  return ListTile(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return Details(
-                                              movie: searchResults[index],
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    },
-                                    leading: Image.network(
-                                      searchResults[index].poster,
-                                    ),
-                                    title: Text(searchResults[index].title),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                            : Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Row(
                                       children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              searchResults[index].rating
-                                                  .toString(),
-                                            ),
-                                            Icon(
-                                              Icons.star_half_rounded,
-                                              color: Colors.amber,
-                                            ),
-                                          ],
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isSearchMovie = true;
+                                            });
+                                          },
+                                          style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                isSearchMovie == true
+                                                ? Colors.white
+                                                : Color.fromARGB(
+                                                    68,
+                                                    255,
+                                                    254,
+                                                    254,
+                                                  ),
+                                          ),
+                                          child: Text(
+                                            "Movie",
+                                            style: TextStyle(fontSize: 10),
+                                          ),
                                         ),
-                                        Text(
-                                          searchResults[index].genres.join(','),
+                                        SizedBox(width: 10),
+                                        TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              isSearchMovie = false;
+                                            });
+                                          },
+                                          style: TextButton.styleFrom(
+                                            foregroundColor:
+                                                isSearchMovie == false
+                                                ? Colors.white
+                                                : Color.fromARGB(
+                                                    68,
+                                                    255,
+                                                    254,
+                                                    254,
+                                                  ),
+                                          ),
+                                          child: Text(
+                                            "TV",
+                                            style: TextStyle(fontSize: 10),
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  );
-                                },
+                                  ),
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    itemCount: isSearchMovie == true
+                                        ? movieSearchResults.length
+                                        : tvSearchResults.length,
+                                    itemBuilder: (context, index) {
+                                      return ListTile(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) {
+                                                return Details(
+                                                  movie: isSearchMovie == true
+                                                      ? movieSearchResults[index]
+                                                      : tvSearchResults[index],
+                                                );
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        leading: Image.network(
+                                          isSearchMovie == true
+                                              ? movieSearchResults[index].poster
+                                              : tvSearchResults[index].poster,
+                                        ),
+                                        title: Text(
+                                          isSearchMovie == true
+                                              ? movieSearchResults[index].title
+                                              : tvSearchResults[index].title,
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  isSearchMovie == true
+                                                      ? movieSearchResults[index]
+                                                            .rating
+                                                            .toString()
+                                                      : tvSearchResults[index]
+                                                            .rating
+                                                            .toString(),
+                                                ),
+                                                Icon(
+                                                  Icons.star_half_rounded,
+                                                  color: Colors.amber,
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              isSearchMovie == true
+                                                  ? movieSearchResults[index]
+                                                        .genres
+                                                        .join(',')
+                                                  : tvSearchResults[index]
+                                                        .genres
+                                                        .join(','),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                       ],
                     ),
