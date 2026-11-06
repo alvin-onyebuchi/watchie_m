@@ -34,15 +34,17 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Action');
-                      print(genres);
+                      addGenreMovie('Action');
+                      addGenreTv('Action & Adventure');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Action')
+                    foregroundColor: movieGenres.contains('Action')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Action')
+                    backgroundColor: movieGenres.contains('Action')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -52,15 +54,16 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Horror');
-                      print(genres);
+                      addGenreMovie('Horror');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Horror')
+                    foregroundColor: movieGenres.contains('Horror')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Horror')
+                    backgroundColor: movieGenres.contains('Horror')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -69,15 +72,16 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Thriller');
-                      print(genres);
+                      addGenreMovie('Thriller');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Thriller')
+                    foregroundColor: movieGenres.contains('Thriller')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Thriller')
+                    backgroundColor: movieGenres.contains('Thriller')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -91,15 +95,17 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Comedy');
-                      print(genres);
+                      addGenreMovie('Comedy');
+                      addGenreTv('Comedy');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Comedy')
+                    foregroundColor: movieGenres.contains('Comedy')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Comedy')
+                    backgroundColor: movieGenres.contains('Comedy')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -108,15 +114,16 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Romance');
-                      print(genres);
+                      addGenreMovie('Romance');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Romance')
+                    foregroundColor: movieGenres.contains('Romance')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Romance')
+                    backgroundColor: movieGenres.contains('Romance')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -125,15 +132,17 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Sci-fi');
-                      print(genres);
+                      addGenreMovie('Sci-fi');
+                      addGenreTv('Sci-Fi & Fantasy');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Sci-fi')
+                    foregroundColor: movieGenres.contains('Sci-fi')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Sci-fi')
+                    backgroundColor: movieGenres.contains('Sci-fi')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -147,15 +156,17 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Drama');
-                      print(genres);
+                      addGenreMovie('Drama');
+                      addGenreTv('Drama');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Drama')
+                    foregroundColor: movieGenres.contains('Drama')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Drama')
+                    backgroundColor: movieGenres.contains('Drama')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -164,15 +175,17 @@ class _OnbordingState extends State<Onbording> {
                 OutlinedButton(
                   onPressed: () {
                     setState(() {
-                      addGenre('Animation');
-                      print(genres);
+                      addGenreMovie('Animation');
+                      addGenreTv('Animation');
+                      print("movie $movieGenres");
+                      print("tv $tvGenres");
                     });
                   },
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: genres.contains('Animation')
+                    foregroundColor: movieGenres.contains('Animation')
                         ? Colors.white
                         : const Color.fromARGB(255, 72, 190, 26),
-                    backgroundColor: genres.contains('Animation')
+                    backgroundColor: movieGenres.contains('Animation')
                         ? const Color.fromARGB(255, 72, 190, 26)
                         : const Color.fromARGB(0, 255, 255, 255),
                   ),
@@ -260,7 +273,7 @@ class _OnbordingState extends State<Onbording> {
                               await recommendationTv();
                               if (!mounted) return;
 
-                              if (genres.isNotEmpty &&
+                              if (movieGenres.isNotEmpty &&
                                   rating != 0 &&
                                   yearRange != null) {
                                 if (!mounted) return;
@@ -283,7 +296,9 @@ class _OnbordingState extends State<Onbording> {
                           },
                     style: FilledButton.styleFrom(
                       backgroundColor:
-                          genres.isNotEmpty && rating != 0 && yearRange != null
+                          movieGenres.isNotEmpty &&
+                              rating != 0 &&
+                              yearRange != null
                           ? Color.fromARGB(255, 72, 190, 26)
                           : const Color.fromARGB(0, 0, 0, 0),
                       foregroundColor: Colors.white,

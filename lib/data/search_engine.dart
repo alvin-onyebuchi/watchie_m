@@ -46,6 +46,7 @@ Future<List<Movie>> searchMovie(String searchQuery) async {
     final poster = posterPath == null
         ? ''
         : "https://image.tmdb.org/t/p/w500$posterPath";
+
     final releaseDate = result["release_date"] as String? ?? '';
 
     final year = releaseDate.length >= 4
@@ -56,6 +57,7 @@ Future<List<Movie>> searchMovie(String searchQuery) async {
     List<String> genres = genreIds.map((id) {
       return genreMapId[id]!;
     }).toList();
+
     print(title);
     return Movie(id, title, poster, genres, year, rating, description);
   }).toList();
@@ -112,6 +114,7 @@ Future<List<Movie>> searchTv(String searchQuery) async {
       return tvGenreMapId[id]!;
     }).toList();
     print('$title ');
+
     return Movie(id, title, poster, genres, year, rating, description);
   }).toList();
 }

@@ -17,9 +17,27 @@ class Details extends StatelessWidget {
           children: [
             Hero(
               tag: movie.id,
-              child: ClipRRect(
-                borderRadius: BorderRadiusGeometry.circular(10),
-                child: Image.network(movie.poster),
+              child: Card(
+                child: ClipRRect(
+                  borderRadius: BorderRadiusGeometry.circular(10),
+                  child: Image.network(
+                    movie.poster,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                          strokeWidth: 2,
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) => Center(
+                      child: Image.asset('assets/images/no_image.jpg'),
+                    ),
+                  ),
+                ),
               ),
             ),
             Card(

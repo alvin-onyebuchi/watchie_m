@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:watchie/const.dart';
-import 'package:watchie/pages/details.dart';
+import 'package:watchie/widgets/media_card.dart';
 
 class Watchlist extends StatefulWidget {
   const Watchlist({super.key});
@@ -25,61 +25,7 @@ class _WatchlistState extends State<Watchlist> {
             ? ListView.builder(
                 itemCount: watchlist.length,
                 itemBuilder: (context, index) {
-                  return ListTile(
-                    onLongPress: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            actions: [
-                              FilledButton(
-                                onPressed: () {
-                                  setState(() {
-                                    watchlist.removeAt(index);
-                                    Navigator.pop(context);
-                                  });
-                                },
-                                child: Text('Delete'),
-                              ),
-                            ],
-
-                            content: Text('Delete ${watchlist[index].title}'),
-                          );
-                        },
-                      );
-                    },
-                    leading: Hero(
-                      tag: watchlist[index].id,
-                      child: ClipRRect(
-                        borderRadius: BorderRadiusGeometry.circular(5),
-                        child: Image.network(watchlist[index].poster),
-                      ),
-                    ),
-                    title: Text(watchlist[index].title),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(watchlist[index].rating.toString()),
-                            Icon(Icons.star_half_rounded, color: Colors.amber),
-                          ],
-                        ),
-                        Text(watchlist[index].genres.join(',')),
-                      ],
-                    ),
-
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return Details(movie: watchlist[index]);
-                          },
-                        ),
-                      );
-                    },
-                  );
+                  return MediaCard(media: watchlist[index]);
                 },
               )
             : Column(

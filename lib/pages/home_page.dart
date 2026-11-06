@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:watchie/const.dart';
 import 'package:watchie/data/search_engine.dart';
-import 'package:watchie/pages/details.dart';
+import 'package:watchie/widgets/media_card.dart';
 import 'package:watchie/widgets/recommended_movie_carouesl.dart';
 import 'package:watchie/widgets/recommended_tv_corousel.dart';
 import 'package:watchie/widgets/trending_movie_carousel.dart';
@@ -125,10 +125,7 @@ class _HomePageState extends State<HomePage> {
                                     : const Color.fromARGB(0, 0, 0, 0),
                                 foregroundColor: Colors.white,
                               ),
-                              child: Text(
-                                "Movie",
-                                style: TextStyle(fontSize: 10),
-                              ),
+                              child: Text("Movie"),
                             ),
                             SizedBox(width: 10),
                             OutlinedButton(
@@ -138,13 +135,12 @@ class _HomePageState extends State<HomePage> {
                                 });
                               },
                               style: OutlinedButton.styleFrom(
-                                fixedSize: Size(70, 20),
                                 backgroundColor: isRecommendedMovie == false
-                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    ? Color.fromARGB(68, 255, 0, 0)
                                     : const Color.fromARGB(0, 0, 0, 0),
                                 foregroundColor: Colors.white,
                               ),
-                              child: Text("TV", style: TextStyle(fontSize: 10)),
+                              child: Text("Series"),
                             ),
                           ],
                         ),
@@ -192,10 +188,7 @@ class _HomePageState extends State<HomePage> {
                                     : const Color.fromARGB(0, 0, 0, 0),
                                 foregroundColor: Colors.white,
                               ),
-                              child: Text(
-                                "Movie",
-                                style: TextStyle(fontSize: 10),
-                              ),
+                              child: Text("Movie"),
                             ),
                             SizedBox(width: 10),
                             OutlinedButton(
@@ -205,13 +198,12 @@ class _HomePageState extends State<HomePage> {
                                 });
                               },
                               style: OutlinedButton.styleFrom(
-                                fixedSize: Size(70, 20),
                                 backgroundColor: isTrendingMovie == false
-                                    ? Color.fromARGB(68, 255, 2, 2)
+                                    ? Color.fromARGB(68, 248, 248, 248)
                                     : const Color.fromARGB(0, 0, 0, 0),
                                 foregroundColor: Colors.white,
                               ),
-                              child: Text("TV", style: TextStyle(fontSize: 10)),
+                              child: Text("Series"),
                             ),
                           ],
                         ),
@@ -279,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                                                   ),
                                           ),
                                           child: Text(
-                                            "TV",
+                                            "Series",
                                             style: TextStyle(fontSize: 10),
                                           ),
                                         ),
@@ -293,63 +285,10 @@ class _HomePageState extends State<HomePage> {
                                         ? movieSearchResults.length
                                         : tvSearchResults.length,
                                     itemBuilder: (context, index) {
-                                      return ListTile(
-                                        onTap: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return Details(
-                                                  movie: isSearchMovie == true
-                                                      ? movieSearchResults[index]
-                                                      : tvSearchResults[index],
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        },
-                                        leading: Image.network(
-                                          isSearchMovie == true
-                                              ? movieSearchResults[index].poster
-                                              : tvSearchResults[index].poster,
-                                        ),
-                                        title: Text(
-                                          isSearchMovie == true
-                                              ? movieSearchResults[index].title
-                                              : tvSearchResults[index].title,
-                                        ),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  isSearchMovie == true
-                                                      ? movieSearchResults[index]
-                                                            .rating
-                                                            .toString()
-                                                      : tvSearchResults[index]
-                                                            .rating
-                                                            .toString(),
-                                                ),
-                                                Icon(
-                                                  Icons.star_half_rounded,
-                                                  color: Colors.amber,
-                                                ),
-                                              ],
-                                            ),
-                                            Text(
-                                              isSearchMovie == true
-                                                  ? movieSearchResults[index]
-                                                        .genres
-                                                        .join(',')
-                                                  : tvSearchResults[index]
-                                                        .genres
-                                                        .join(','),
-                                            ),
-                                          ],
-                                        ),
+                                      return MediaCard(
+                                        media: isSearchMovie == true
+                                            ? movieSearchResults[index]
+                                            : tvSearchResults[index],
                                       );
                                     },
                                   ),
