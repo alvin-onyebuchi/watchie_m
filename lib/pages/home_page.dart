@@ -9,8 +9,6 @@ import 'package:watchie/widgets/recommended_tv_corousel.dart';
 import 'package:watchie/widgets/trending_movie_carousel.dart';
 import 'package:watchie/widgets/trending_tv_carousel.dart';
 
-List<Movie> searchedMatchedMovies = [];
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -20,8 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String searchQuery = '';
-  List<Movie> movieSearchResults = [];
-  List<Movie> tvSearchResults = [];
+  List<Media> movieSearchResults = [];
+  List<Media> tvSearchResults = [];
   Timer? searchDebounce;
   int searchRequedtId = 0;
   bool isTrendingMovie = true;
@@ -218,7 +216,15 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         isSearching
-                            ? const Center(child: CircularProgressIndicator())
+                            ? Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(height: 20),
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ],
+                              )
                             : searchError != null
                             ? Center(child: Text(searchError!))
                             : movieSearchResults.isEmpty &&

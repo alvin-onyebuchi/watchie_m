@@ -5,7 +5,7 @@ import 'package:watchie/const.dart';
 import 'package:watchie/data/trending_engine.dart';
 import 'package:watchie/tmbd_services.dart';
 
-Future<List<Movie>> searchMovie(String searchQuery) async {
+Future<List<Media>> searchMovie(String searchQuery) async {
   final query = searchQuery.trim();
 
   if (query.isEmpty) {
@@ -36,6 +36,7 @@ Future<List<Movie>> searchMovie(String searchQuery) async {
     final result = item as Map<String, dynamic>;
 
     final id = result["id"];
+    final String mediaType = "movie";
 
     double rating = result["vote_average"];
 
@@ -59,11 +60,20 @@ Future<List<Movie>> searchMovie(String searchQuery) async {
     }).toList();
 
     print(title);
-    return Movie(id, title, poster, genres, year, rating, description);
+    return Media(
+      id,
+      mediaType,
+      title,
+      poster,
+      genres,
+      year,
+      rating,
+      description,
+    );
   }).toList();
 }
 
-Future<List<Movie>> searchTv(String searchQuery) async {
+Future<List<Media>> searchTv(String searchQuery) async {
   final query = searchQuery.trim();
 
   if (query.isEmpty) {
@@ -94,6 +104,7 @@ Future<List<Movie>> searchTv(String searchQuery) async {
     final result = item as Map<String, dynamic>;
 
     final id = result["id"];
+    final String mediaType = "tv";
     double rating = result["vote_average"];
 
     final String title = result["name"];
@@ -115,6 +126,15 @@ Future<List<Movie>> searchTv(String searchQuery) async {
     }).toList();
     print('$title ');
 
-    return Movie(id, title, poster, genres, year, rating, description);
+    return Media(
+      id,
+      mediaType,
+      title,
+      poster,
+      genres,
+      year,
+      rating,
+      description,
+    );
   }).toList();
 }

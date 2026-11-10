@@ -21,11 +21,11 @@ class MediaCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: const Color.fromARGB(55, 255, 255, 255),
+          color: const Color.fromARGB(60, 189, 189, 189),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             width: 0.3,
-            color: const Color.fromARGB(85, 252, 1, 1),
+            color: const Color.fromARGB(143, 190, 190, 190),
           ),
         ),
         margin: EdgeInsets.all(5),
@@ -67,7 +67,7 @@ class MediaCard extends StatelessWidget {
                     Wrap(children: [Text(media.title)]),
 
                     Text(media.year.toString()),
-                    Wrap(children: [Text(media.description, maxLines: 2)]),
+                    Wrap(children: [Text(media.description, maxLines: 3)]),
                   ],
                 ),
               ),

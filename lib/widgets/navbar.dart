@@ -15,6 +15,10 @@ class _NavbarState extends State<Navbar> {
       valueListenable: navigationNotifier,
       builder: (context, navigator, child) {
         return NavigationBar(
+          indicatorColor: const Color.fromARGB(85, 244, 67, 54),
+          maintainBottomViewPadding: false,
+          labelPadding: EdgeInsets.all(10),
+          backgroundColor: const Color.fromARGB(95, 197, 197, 197),
           onDestinationSelected: (value) {
             navigationNotifier.value = value;
           },

@@ -58,6 +58,7 @@ Future<void> getTrending() async {
   trendingMovie.clear();
   for (var result in results) {
     int id = result["id"];
+    String mediaType = "movie";
     double rating = result["vote_average"];
     String title = result["title"];
     String description = result["overview"];
@@ -68,7 +69,16 @@ Future<void> getTrending() async {
     List<String> genres = genreIds.map((id) {
       return genreMapId[id]!;
     }).toList();
-    Movie movie = Movie(id, title, poster, genres, year, rating, description);
+    Media movie = Media(
+      id,
+      mediaType,
+      title,
+      poster,
+      genres,
+      year,
+      rating,
+      description,
+    );
 
     trendingMovie.add(movie);
   }
@@ -89,6 +99,7 @@ Future<void> getTrendingTv() async {
   trendingTv.clear();
   for (var result in results) {
     int id = result["id"];
+    String mediaType = "tv";
     double rating = result["vote_average"];
     String title = result["name"];
     String description = result["overview"];
@@ -99,8 +110,17 @@ Future<void> getTrendingTv() async {
     List<String> genres = genreIds.map((id) {
       return tvGenreMapId[id]!;
     }).toList();
-    Movie movie = Movie(id, title, poster, genres, year, rating, description);
+    Media tv = Media(
+      id,
+      mediaType,
+      title,
+      poster,
+      genres,
+      year,
+      rating,
+      description,
+    );
 
-    trendingTv.add(movie);
+    trendingTv.add(tv);
   }
 }

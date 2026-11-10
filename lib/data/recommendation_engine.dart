@@ -79,10 +79,11 @@ Future<void> recommendationMovie() async {
   for (var result in results.take(5)) {
     print('${result["title"]} -> ${result["release_date"]}');
   }
-  Movie? movie;
+  Media? movie;
   recommendedMovie.clear();
   for (var result in results) {
     int id = result["id"];
+    String mediaType = "movie";
     double rating = result["vote_average"];
     String title = result["title"];
     String description = result["overview"];
@@ -94,7 +95,16 @@ Future<void> recommendationMovie() async {
     List<String> genres = genreIds.map((id) {
       return genreMapId[id]!;
     }).toList();
-    movie = Movie(id, title, poster, genres, year, rating, description);
+    movie = Media(
+      id,
+      mediaType,
+      title,
+      poster,
+      genres,
+      year,
+      rating,
+      description,
+    );
 
     recommendedMovie.add(movie);
   }
@@ -128,10 +138,11 @@ Future<void> recommendationTv() async {
   // for (var result in results.take(5)) {
   //   print('${result["title"]} -> ${result["release_date"]}');
   // }
-  Movie? movie;
+  Media? movie;
   recommendedTv.clear();
   for (var result in results) {
     int id = result["id"];
+    String mediaType = "tv";
     double rating = result["vote_average"];
     String title = result["name"];
     String description = result["overview"];
@@ -143,7 +154,16 @@ Future<void> recommendationTv() async {
     List<String> genres = genreIds.map((id) {
       return tvGenreMapId[id]!;
     }).toList();
-    movie = Movie(id, title, poster, genres, year, rating, description);
+    movie = Media(
+      id,
+      mediaType,
+      title,
+      poster,
+      genres,
+      year,
+      rating,
+      description,
+    );
 
     recommendedTv.add(movie);
   }
